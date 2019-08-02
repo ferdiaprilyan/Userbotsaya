@@ -52,11 +52,7 @@ async def update_checker():
 
 	upstream = repo.remote('upstream')
 	upstream.fetch(brname)
-	try:
-		changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
-	except exc.GitCommandError:
-		log.warning("Failed to get changelog!\nMaybe current git is invalid.")
-		return
+	changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
 
 	if not changelog:
 		log.info(f'Nana is up-to-date with branch {brname}')

@@ -23,6 +23,9 @@ class Config(object):
 	Owner = 388576209 # Insert your Telegram ID (go @EmiliaHikariBot, type /id)
 	AdminSettings = [388576209] # Do like above, can insert multiple other user id, example [12345, 23456]
 	Command = ["!", "."] # Insert command prefix, if you insert "!" then you can do !ping
+	# WORKER must be int (number)
+	NANA_WORKER = 8
+	ASSISTANT_WORKER = 2
 
 	# APIs token
 	thumbnail_API = "" # Register free here: https://thumbnail.ws/

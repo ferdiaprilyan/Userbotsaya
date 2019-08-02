@@ -116,6 +116,7 @@ async def youtube_music(client, message):
 		text += "🕦 **Duration:** `{}`\n".format(video.duration)
 		origtitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title + "." + music._extension))
 		musictitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title))
+		musicdate = video._ydl_info['upload_date'][:4]
 		titletext = "**Downloading music...**\n"
 		await message.edit(titletext+text, disable_web_page_preview=True)
 		r = requests.get("https://i.ytimg.com/vi/{}/maxresdefault.jpg".format(video.videoid), stream=True)
@@ -151,9 +152,9 @@ async def youtube_music(client, message):
 				await setbot.send_message(message.from_user.id, "Hello 🙂\nYou need to install ffmpeg to make audio works better, here is guide how to install it:\n\n**If you're using linux**, go to your terminal, type:\n`sudo apt install ffmpeg`\n\n**If you're using Windows**, download ffmpeg here:\n`https://ffmpeg.zeranoe.com/builds/`\nAnd then extract (if was archive), and place ffmpeg.exe to workdir (in current dir)\n\n**If you're using heroku**, type this in your workdir:\n`heroku buildpacks:add https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git`\nOr if you not using heroku term, follow this guide:\n1. Go to heroku.com\n2. Go to your app in heroku\n3. Change tabs/click Settings, then search for Buildpacks text\n4. Click button Add build pack, then type `https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest`\n5. Click Save changes, and you need to rebuild your heroku app to take changes!\n\nNeed help?\nGo @AyraSupport and ask there")
 				return
 		if avthumb:
-			os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -i "nana/cache/thumb.jpg" -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (Front)" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album="{video.author}" -metadata album_artist="{video.author}" -metadata genre="{video._category}" -metadata date="{video._ydl_info['upload_date'][:4]}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+			os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -i "nana/cache/thumb.jpg" -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (Front)" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album="{video.author}" -metadata album_artist="{video.author}" -metadata genre="{video._category}" -metadata date="{musicdate}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
 		else:
-			os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album="{video.author}" -metadata album_artist="{video.author}" -metadata genre="{video._category}" -metadata date="{video._ydl_info['upload_date'][:4]}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+			os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album="{video.author}" -metadata album_artist="{video.author}" -metadata genre="{video._category}" -metadata date="{musicdate}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
 		try:
 			os.remove("nana/downloads/{}".format(origtitle))
 		except FileNotFoundError:

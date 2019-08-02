@@ -49,27 +49,31 @@ async def Updater(client, message):
 		return
 
 	if initial:
-		try:
-			os.mkdir('nana-old')
-			os.rename('nana', 'nana-old/nana')
-			os.rename('.gitignore', 'nana-old/.gitignore')
-			os.rename('LICENSE', 'nana-old/LICENSE')
-			os.rename('README.md', 'nana-old/README.md')
-			os.rename('requirements.txt', 'nana-old/requirements.txt')
-			update = repo.create_remote('master', REPOSITORY)
-			update.pull('master')
-			os.rename('nana-old/nana/config.py', 'nana/config.py')
-			shutil.rmtree('nana/session/')
-			os.rename('nana-old/nana/session/', 'nana/session/')
-		except Exception as err:
-			exc_type, exc_obj, exc_tb = sys.exc_info()
-			await message.edit('An error has accured!\nPlease see your Assistant for more information!')
-			await except_hook(exc_type, exc_obj, exc_tb)
+		if len(message.text.split()) != 2:
+			await message.edit('Your git workdir is missing!\nBut i can repair and take new latest update for you.\nJust do `update now` to repair and take update!')
 			return
-		await message.edit('Successfully Updated!\nBot is restarting...')
-		await update_changelog("-> **WARNING**: Bot has been created a new git and sync to latest version, your old files is in nana-old")
-		await restart_all()
-		return
+		elif len(message.text.split()) == 2 and message.text.split()[1] == "now":
+			try:
+				os.mkdir('nana-old')
+				os.rename('nana', 'nana-old/nana')
+				os.rename('.gitignore', 'nana-old/.gitignore')
+				os.rename('LICENSE', 'nana-old/LICENSE')
+				os.rename('README.md', 'nana-old/README.md')
+				os.rename('requirements.txt', 'nana-old/requirements.txt')
+				update = repo.create_remote('master', REPOSITORY)
+				update.pull('master')
+				os.rename('nana-old/nana/config.py', 'nana/config.py')
+				shutil.rmtree('nana/session/')
+				os.rename('nana-old/nana/session/', 'nana/session/')
+			except Exception as err:
+				exc_type, exc_obj, exc_tb = sys.exc_info()
+				await message.edit('An error has accured!\nPlease see your Assistant for more information!')
+				await except_hook(exc_type, exc_obj, exc_tb)
+				return
+			await message.edit('Successfully Updated!\nBot is restarting...')
+			await update_changelog("-> **WARNING**: Bot has been created a new git and sync to latest version, your old files is in nana-old")
+			await restart_all()
+			return
 
 
 	brname = repo.active_branch.name

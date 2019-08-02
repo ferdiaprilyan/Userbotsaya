@@ -27,8 +27,11 @@ Update your bot to latest version
 async def gen_chlog(repo, diff):
 	changelog = ""
 	d_form = "%H:%M - %d/%m/%y"
-	for cl in repo.iter_commits(diff):
-		changelog += f'• [{cl.committed_datetime.strftime(d_form)}]: {cl.summary} <{cl.author}>\n'
+	try:
+		for cl in repo.iter_commits(diff):
+			changelog += f'• [{cl.committed_datetime.strftime(d_form)}]: {cl.summary} <{cl.author}>\n'
+	except exc.GitCommandError:
+		changelog = None
 	return changelog
 
 
@@ -90,10 +93,7 @@ async def Updater(client, message):
 
 	upstream = repo.remote('upstream')
 	upstream.fetch(brname)
-	try:
-		changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
-	except exc.GitCommandError:
-		changelog = "Failed to fetch changelog!"
+	changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
 
 	if not changelog:
 		await message.edit(f'Nana is up-to-date with branch **{brname}**\n')

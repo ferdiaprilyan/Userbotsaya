@@ -9,11 +9,14 @@ from git import Repo, exc
 
 
 
-def gen_chlog(repo, diff):
+async def gen_chlog(repo, diff):
 	changelog = ""
 	d_form = "%H:%M - %d/%m/%y"
-	for cl in repo.iter_commits(diff):
-		changelog += f'• [{cl.committed_datetime.strftime(d_form)}]: {cl.summary} <{cl.author}>\n'
+	try:
+		for cl in repo.iter_commits(diff):
+			changelog += f'• [{cl.committed_datetime.strftime(d_form)}]: {cl.summary} <{cl.author}>\n'
+	except exc.GitCommandError:
+		changelog = None
 	return changelog
 
 async def update_changelog(changelog):
@@ -49,7 +52,11 @@ async def update_checker():
 
 	upstream = repo.remote('upstream')
 	upstream.fetch(brname)
-	changelog = gen_chlog(repo, f'HEAD..upstream/{brname}')
+	try:
+		changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
+	except exc.GitCommandError:
+		log.warning("Failed to get changelog!\nMaybe current git is invalid.")
+		return
 
 	if not changelog:
 		log.info(f'Nana is up-to-date with branch {brname}')
@@ -95,7 +102,7 @@ async def update_button(client, query):
 
 	upstream = repo.remote('upstream')
 	upstream.fetch(brname)
-	changelog = gen_chlog(repo, f'HEAD..upstream/{brname}')
+	changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
 
 	try:
 		upstream.pull(brname)

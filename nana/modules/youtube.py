@@ -112,9 +112,9 @@ async def youtube_music(client, message):
 		audios = [audio for audio in video.audiostreams]
 		audios.sort(key=lambda a: (int(a.quality.strip('k')) * -1))
 		music = audios[0]
-		text = "🎬 Title: [{}]({})\n".format(escape_markdown(video.title), video.watchv_url)
-		text += "👤 Author: `{}`\n".format(video.author)
-		text += "🕦 Duration: `{}`\n".format(video.duration)
+		text = "🎬 **Title:** [{}]({})\n".format(escape_markdown(video.title), video.watchv_url)
+		text += "👤 **Author:** `{}`\n".format(video.author)
+		text += "🕦 **Duration:** `{}`\n".format(video.duration)
 		origtitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title + "." + music._extension))
 		musictitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title))
 		titletext = "**Downloading music...**\n"
@@ -164,7 +164,7 @@ async def youtube_music(client, message):
 		getprev = requests.get(video.thumb, stream=True)
 		with open("nana/cache/prev.jpg", "wb") as stk:
 			shutil.copyfileobj(getprev.raw, stk)
-		await app.send_audio(message.chat.id, audio="nana/downloads/{}.mp3".format(musictitle), thumb="nana/cache/prev.jpg", title=music.title)
+		await app.send_audio(message.chat.id, audio="nana/downloads/{}.mp3".format(musictitle), thumb="nana/cache/prev.jpg", title=music.title, caption="🕦 `{}`".format(video.duration))
 		os.remove("nana/cache/prev.jpg")
 		try:
 			os.remove("nana/cache/thumb.jpg")

@@ -77,7 +77,7 @@ async def executor(client, message):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		errors = traceback.format_exception(etype=exc_type, value=exc_obj, tb=exc_tb)
-		await message.edit("**Execute**\n`{}`\n\n**Failed:**\n```{}```".format(code, errors))
+		await message.edit("**Execute**\n`{}`\n\n**Failed:**\n```{}```".format(code, "".join(errors)))
 		logging.exception("Execution error")
 
 @app.on_message(Filters.user("self") & Filters.command(["eval"], Command))
@@ -105,7 +105,7 @@ async def evaluation(client, message):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		errors = traceback.format_exception(etype=exc_type, value=exc_obj, tb=exc_tb)
-		await message.edit("Error: `{}`".format(code, errors))
+		await message.edit("Error: `{}`".format(code, "".join(errors)))
 		logging.exception("Evaluation error")
 
 
@@ -151,7 +151,7 @@ async def terminal(client, message):
 		except Exception as err:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			errors = traceback.format_exception(etype=exc_type, value=exc_obj, tb=exc_tb)
-			await message.edit("""**Input:**\n```{}```\n\n**Error:**\n```{}```""".format(teks, errors))
+			await message.edit("""**Input:**\n```{}```\n\n**Error:**\n```{}```""".format(teks, "".join(errors)))
 			return
 		output = process.stdout.read()[:-1].decode("utf-8")
 	if str(output) == "\n":

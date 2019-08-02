@@ -181,5 +181,5 @@ async def youtube_music(client, message):
 		errors = traceback.format_exception(etype=exc_type, value=exc_obj, tb=exc_tb)
 		await message.edit("**An error has accured!**\nCheck your assistant for more information!")
 		button = InlineKeyboardMarkup([[InlineKeyboardButton("🐞 Report bugs", callback_data="report_errors")]])
-		await setbot.send_message(message.from_user.id, "**An error has accured!**\n```{}```".format(errors), reply_markup=button)
+		await setbot.send_message(message.from_user.id, "**An error has accured!**\n```{}```".format("".join(errors)), reply_markup=button)
 		logging.exception("Execution error")

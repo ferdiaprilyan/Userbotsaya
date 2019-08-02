@@ -23,7 +23,6 @@ class Config(object):
 	Owner = 388576209 # Insert your Telegram ID (go @EmiliaHikariBot, type /id)
 	AdminSettings = [388576209] # Do like above, can insert multiple other user id, example [12345, 23456]
 	Command = ["!", "."] # Insert command prefix, if you insert "!" then you can do !ping
-	OutputDownload = "nana/downloads/" # If dir was not found, you will got error!
 
 	# APIs token
 	thumbnail_API = "" # Register free here: https://thumbnail.ws/

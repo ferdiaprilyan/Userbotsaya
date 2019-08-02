@@ -2,7 +2,7 @@ import time
 import datetime
 import os
 
-from nana import app, Command, OutputDownload
+from nana import app, Command
 from pyrogram import Filters
 from pyDownload import Downloader
 
@@ -66,7 +66,7 @@ async def download_url(url, file_name):
 		downlaoded += "\n💿 File size: `" + str(file_size) + " Byte`\n"
 
 	try:
-		os.rename(downloader.file_name, OutputDownload + file_name)
+		os.rename(downloader.file_name, "nana/downloads/" + file_name)
 	except OSError:
 		return "Failed to download file\nInvaild file name!"
 	return downlaoded
@@ -86,7 +86,7 @@ async def download_from_url(client, message):
 		await message.edit("Invaild args given!")
 		return
 	try:
-		os.listdir(OutputDownload)
+		os.listdir("nana/downloads/")
 	except FileNotFoundError:
 		await message.edit("Invalid download path in config!")
 		return
@@ -102,31 +102,31 @@ async def download_from_telegram(client, message):
 		start = int(time.time())
 		if message.reply_to_message.photo:
 			nama = "photo_{}_{}.png".format(message.reply_to_message.photo.file_id, message.reply_to_message.photo.date)
-			await client.download_media(message.reply_to_message.photo.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.photo.file_id, file_name="nana/downloads/" + nama)
 		elif message.reply_to_message.animation:
 			nama = "giphy_{}-{}.gif".format(message.reply_to_message.animation.date, message.reply_to_message.animation.file_size)
-			await client.download_media(message.reply_to_message.animation.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.animation.file_id, file_name="nana/downloads/" + nama)
 		elif message.reply_to_message.video:
 			nama = "video_{}-{}.mp4".format(message.reply_to_message.video.date, message.reply_to_message.video.file_size)
-			await client.download_media(message.reply_to_message.video.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.video.file_id, file_name="nana/downloads/" + nama)
 		elif message.reply_to_message.sticker:
 			nama = "sticker_{}_{}.webp".format(message.reply_to_message.sticker.date, message.reply_to_message.sticker.set_name)
-			await client.download_media(message.reply_to_message.sticker.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.sticker.file_id, file_name="nana/downloads/" + nama)
 		elif message.reply_to_message.audio:
 			nama = "{}".format(message.reply_to_message.audio.file_name)
-			await client.download_media(message.reply_to_message.audio.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.audio.file_id, file_name="nana/downloads/" + nama)
 		elif message.reply_to_message.voice:
 			nama = "audio_{}.ogg".format(message.reply_to_message.voice.file_id)
-			await client.download_media(message.reply_to_message.voice.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.voice.file_id, file_name="nana/downloads/" + nama)
 		elif message.reply_to_message.document:
 			nama = "{}".format(message.reply_to_message.document.file_name)
-			await client.download_media(message.reply_to_message.document.file_id, file_name=OutputDownload + nama)
+			await client.download_media(message.reply_to_message.document.file_id, file_name="nana/downloads/" + nama)
 		else:
 			await message.edit("Unknown file!")
 			return
 		end = int(time.time())
 		times = await time_parser(start, end)
-		text = f"**⬇ Downloaded!**\n🗂 File name: `{nama}`\n🏷 Saved to: `{OutputDownload}`\n⏲ Downloaded in: {times}"
+		text = f"**⬇ Downloaded!**\n🗂 File name: `{nama}`\n🏷 Saved to: `nana/downloads/`\n⏲ Downloaded in: {times}"
 		await message.edit(text)
 	else:
 		await message.edit("Reply document to download it")

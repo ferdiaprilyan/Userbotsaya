@@ -6,7 +6,7 @@ import requests
 from pydrive.drive import GoogleDrive
 
 from bs4 import BeautifulSoup
-from nana import app, setbot, Command, OutputDownload, gauth
+from nana import app, setbot, Command, gauth
 from nana.helpers.parser import cleanhtml
 from pyrogram import Filters
 
@@ -92,10 +92,10 @@ async def gdrive_stuff(client, message):
 		download = drive.CreateFile({'id': driveid})
 		download.GetContentFile(filename)
 		try:
-			os.rename(filename, OutputDownload + filename)
+			os.rename(filename, "nana/downloads/" + filename)
 		except FileExistsError:
-			os.rename(filename, OutputDownload + filename + ".2")
-		await message.edit("Downloaded!\nFile saved to `{}`".format(OutputDownload + filename))
+			os.rename(filename, "nana/downloads/" + filename + ".2")
+		await message.edit("Downloaded!\nFile saved to `{}`".format("nana/downloads/" + filename))
 	elif len(message.text.split()) == 3 and message.text.split()[1] == "upload":
 		filename = message.text.split()[2].split(None, 1)[0]
 		checkfile = os.path.isfile(filename)
@@ -127,34 +127,34 @@ async def gdrive_stuff(client, message):
 			await message.edit("__Downloading...__")
 			if message.reply_to_message.photo:
 				nama = "photo_{}_{}.png".format(message.reply_to_message.photo.file_id, message.reply_to_message.photo.date)
-				await client.download_media(message.reply_to_message.photo.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.photo.file_id, file_name="nana/downloads/" + nama)
 			elif message.reply_to_message.animation:
 				nama = "giphy_{}-{}.gif".format(message.reply_to_message.animation.date, message.reply_to_message.animation.file_size)
-				await client.download_media(message.reply_to_message.animation.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.animation.file_id, file_name="nana/downloads/" + nama)
 			elif message.reply_to_message.video:
 				nama = "video_{}-{}.mp4".format(message.reply_to_message.video.date, message.reply_to_message.video.file_size)
-				await client.download_media(message.reply_to_message.video.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.video.file_id, file_name="nana/downloads/" + nama)
 			elif message.reply_to_message.sticker:
 				nama = "sticker_{}_{}.webp".format(message.reply_to_message.sticker.date, message.reply_to_message.sticker.set_name)
-				await client.download_media(message.reply_to_message.sticker.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.sticker.file_id, file_name="nana/downloads/" + nama)
 			elif message.reply_to_message.audio:
 				nama = "{}".format(message.reply_to_message.audio.file_name)
-				await client.download_media(message.reply_to_message.audio.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.audio.file_id, file_name="nana/downloads/" + nama)
 			elif message.reply_to_message.voice:
 				nama = "audio_{}.ogg".format(message.reply_to_message.voice.file_id)
-				await client.download_media(message.reply_to_message.voice.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.voice.file_id, file_name="nana/downloads/" + nama)
 			elif message.reply_to_message.document:
 				nama = "{}".format(message.reply_to_message.document.file_name)
-				await client.download_media(message.reply_to_message.document.file_id, file_name=OutputDownload + nama)
+				await client.download_media(message.reply_to_message.document.file_id, file_name="nana/downloads/" + nama)
 			else:
 				message.edit("Unknown file!")
 				return
 			upload = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": drive_dir}], 'title': nama})
-			upload.SetContentFile(OutputDownload + nama)
+			upload.SetContentFile("nana/downloads/" + nama)
 			upload.Upload()
 			upload.InsertPermission({'type': 'anyone', 'value': 'anyone', 'role': 'reader'})
 			await message.edit("Done!\nDownload link: [{}]({})\nDirect download link: [{}]({})".format(nama, upload['alternateLink'], nama, upload['downloadUrl']))
-			os.remove(OutputDownload + nama)
+			os.remove("nana/downloads/" + nama)
 		else:
 			await message.edit("Reply document to mirror it to gdrive")
 	else:

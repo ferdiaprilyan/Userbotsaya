@@ -50,9 +50,6 @@ api_hash = Config.api_hash
 # Required for some features
 Owner = Config.Owner
 Command = Config.Command
-OutputDownload = Config.OutputDownload
-if OutputDownload[-1] != "/":
-	OutputDownload = OutputDownload + "/"
 
 # APIs
 thumbnail_API = Config.thumbnail_API

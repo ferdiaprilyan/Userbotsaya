@@ -146,9 +146,9 @@ async def youtube_music(client, message):
 		await message.edit(titletext+text, disable_web_page_preview=True)
 		try:
 			if avthumb:
-				os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -i "nana/cache/thumb.jpg" -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (Front)" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album_artist="{video.author}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+				os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -i "nana/cache/thumb.jpg" -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (Front)" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album="{video.author}" -metadata album_artist="{video.author}" -metadata genre="{video._category}" -metadata date="{video._ydl_info['upload_date'][:4]}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
 			else:
-				os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album_artist="{video.author}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+				os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album="{video.author}" -metadata album_artist="{video.author}" -metadata genre="{video._category}" -metadata date="{video._ydl_info['upload_date'][:4]}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
 		except Exception as err:
 			if "command not found" in str(err) or "is not recognized" in str(err):
 				await message.edit("You need to install ffmpeg first!\nCheck your assistant for more information!")

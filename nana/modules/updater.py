@@ -27,13 +27,25 @@ Update your bot to latest version
 async def gen_chlog(repo, diff):
 	changelog = ""
 	d_form = "%H:%M - %d/%m/%y"
-	try:
-		for cl in repo.iter_commits(diff):
-			changelog += f'• [{cl.committed_datetime.strftime(d_form)}]: {cl.summary} <{cl.author}>\n'
-	except exc.GitCommandError:
-		changelog = None
+	for cl in repo.iter_commits(diff):
+		changelog += f'• [{cl.committed_datetime.strftime(d_form)}]: {cl.summary} <{cl.author}>\n'
 	return changelog
 
+async def initial_git(repo):
+	isexist = os.path.exists('nana-old')
+	if isexist:
+		shutil.rmtree('nana-old')
+	os.mkdir('nana-old')
+	os.rename('nana', 'nana-old/nana')
+	os.rename('.gitignore', 'nana-old/.gitignore')
+	os.rename('LICENSE', 'nana-old/LICENSE')
+	os.rename('README.md', 'nana-old/README.md')
+	os.rename('requirements.txt', 'nana-old/requirements.txt')
+	update = repo.create_remote('master', REPOSITORY)
+	update.pull('master')
+	os.rename('nana-old/nana/config.py', 'nana/config.py')
+	shutil.rmtree('nana/session/')
+	os.rename('nana-old/nana/session/', 'nana/session/')
 
 @app.on_message(Filters.user("self") & Filters.command(["update"], Command))
 async def Updater(client, message):
@@ -57,17 +69,7 @@ async def Updater(client, message):
 			return
 		elif len(message.text.split()) == 2 and message.text.split()[1] == "now":
 			try:
-				os.mkdir('nana-old')
-				os.rename('nana', 'nana-old/nana')
-				os.rename('.gitignore', 'nana-old/.gitignore')
-				os.rename('LICENSE', 'nana-old/LICENSE')
-				os.rename('README.md', 'nana-old/README.md')
-				os.rename('requirements.txt', 'nana-old/requirements.txt')
-				update = repo.create_remote('master', REPOSITORY)
-				update.pull('master')
-				os.rename('nana-old/nana/config.py', 'nana/config.py')
-				shutil.rmtree('nana/session/')
-				os.rename('nana-old/nana/session/', 'nana/session/')
+				await initial_git(repo)
 			except Exception as err:
 				exc_type, exc_obj, exc_tb = sys.exc_info()
 				await message.edit('An error has accured!\nPlease see your Assistant for more information!')
@@ -93,7 +95,25 @@ async def Updater(client, message):
 
 	upstream = repo.remote('upstream')
 	upstream.fetch(brname)
-	changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
+	try:
+		changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
+	except Exception as err:
+		if "fatal: bad revision" in str(err):
+			try:
+				await initial_git(repo)
+			except Exception as err:
+				exc_type, exc_obj, exc_tb = sys.exc_info()
+				await message.edit('An error has accured!\nPlease see your Assistant for more information!')
+				await except_hook(exc_type, exc_obj, exc_tb)
+				return
+			await message.edit('Successfully Updated!\nBot is restarting...')
+			await update_changelog("-> **WARNING**: Bot has been created a new git and sync to latest version, your old files is in nana-old")
+			await restart_all()
+			return
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		await message.edit('An error has accured!\nPlease see your Assistant for more information!')
+		await except_hook(exc_type, exc_obj, exc_tb)
+		return
 
 	if not changelog:
 		await message.edit(f'Nana is up-to-date with branch **{brname}**\n')

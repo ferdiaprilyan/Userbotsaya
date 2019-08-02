@@ -34,6 +34,8 @@ async def kang_stickers(client, message):
 		await client.download_media(message.reply_to_message.sticker.file_id, file_name="nana/cache/sticker.png")
 	elif message.reply_to_message and message.reply_to_message.photo:
 		await client.download_media(message.reply_to_message.photo.file_id, file_name="nana/cache/sticker.png")
+	elif message.reply_to_message and message.reply_to_message.document and message.reply_to_message.document.mime_type == "image/png":
+		await client.download_media(message.reply_to_message.document.file_id, file_name="nana/cache/sticker.png")
 	else:
 		await message.edit("Reply a sticker or photo to kang it!\nCurrent sticker pack is: {}".format(sticker_pack))
 		return
@@ -59,10 +61,10 @@ async def kang_stickers(client, message):
 	im.save("nana/cache/sticker.png", 'PNG')
 		
 	await client.send_message("@Stickers", "/addsticker")
-	# client.read_history("@Stickers")
+	await client.read_history("@Stickers")
 	time.sleep(0.2)
 	await client.send_message("@Stickers", sticker_pack)
-	# client.read_history("@Stickers")
+	await client.read_history("@Stickers")
 	time.sleep(0.2)
 	checkfull = await app.get_history("@Stickers", limit=1)
 	if checkfull[0].text == "Whoa! That's probably enough stickers for one pack, give it a break. A pack can't have more than 120 stickers at the moment.":
@@ -81,8 +83,8 @@ async def kang_stickers(client, message):
 	if ic == None:
 		ic = "🤔"
 	await client.send_message("@Stickers", ic)
-	# client.read_history("@Stickers")
+	await client.read_history("@Stickers")
 	time.sleep(1)
 	await client.send_message("@Stickers", "/done")
 	await message.edit("**Sticker added!**\nYour sticker has been saved on [This sticker pack](https://t.me/addstickers/{})".format(sticker_pack))
-	# client.read_history("@Stickers")
+	await client.read_history("@Stickers")

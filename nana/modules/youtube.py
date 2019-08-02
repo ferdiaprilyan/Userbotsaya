@@ -114,8 +114,8 @@ async def youtube_music(client, message):
 		text = "🎬 Title: [{}]({})\n".format(escape_markdown(video.title), video.watchv_url)
 		text += "👤 Author: `{}`\n".format(video.author)
 		text += "🕦 Duration: `{}`\n".format(video.duration)
-		origtitle = re.sub(r'[\\/*?:"<>|]',"", str(music.title + "." + music._extension))
-		musictitle = re.sub(r'[\\/*?:"<>|]',"", str(music.title))
+		origtitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title + "." + music._extension))
+		musictitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title))
 		titletext = "**Downloading music...**\n"
 		await message.edit(titletext+text, disable_web_page_preview=True)
 		r = requests.get("https://i.ytimg.com/vi/{}/maxresdefault.jpg".format(video.videoid), stream=True)
@@ -154,7 +154,7 @@ async def youtube_music(client, message):
 		with open("nana/cache/prev.jpg", "wb") as stk:
 			shutil.copyfileobj(getprev.raw, stk)
 		await app.send_audio(message.chat.id, audio="nana/downloads/{}.mp3".format(musictitle), thumb="nana/cache/prev.jpg", title=music.title)
-		os.remoev("nana/cache/prev.jpg")
+		os.remove("nana/cache/prev.jpg")
 		try:
 			os.remove("nana/cache/thumb.jpg")
 		except FileNotFoundError:

@@ -144,10 +144,17 @@ async def youtube_music(client, message):
 			return await message.edit(download)
 		titletext = "**Converting music...**\n"
 		await message.edit(titletext+text, disable_web_page_preview=True)
-		if avthumb:
-			os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -i "nana/cache/thumb.jpg" -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (Front)" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album_artist="{video.author}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
-		else:
-			os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album_artist="{video.author}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+		try:
+			if avthumb:
+				os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -i "nana/cache/thumb.jpg" -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (Front)" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album_artist="{video.author}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+			else:
+				os.system(f'ffmpeg -loglevel panic -i "nana/downloads/{origtitle}" -metadata title="{music.title}" -metadata author="{video.author}" -metadata album_artist="{video.author}" -acodec libmp3lame -aq 4 -y "nana/downloads/{musictitle}.mp3"')
+		except Exception as err:
+			if "command not found" in str(err) or "is not recognized" in str(err):
+				await message.edit("You need to install ffmpeg first!\nCheck your assistant for more information!")
+				await setbot.send_message(message.from_user.id, "Hello 🙂\nYou need to install ffmpeg to make audio works better, here is guide how to install it:\n\n**If you're using linux**, go to your terminal, type:\n`sudo apt install ffmpeg`\n\n**If you're using Windows**, download ffmpeg here:\n`https://ffmpeg.zeranoe.com/builds/`\nAnd then extract (if was archive), and place ffmpeg.exe to workdir (in current dir)\n\n**If you're using heroku**, type this in your workdir:\n`heroku buildpacks:add https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git`\nOr if you not using heroku term, follow this guide:\n1. Go to heroku.com\n2. Go to your app in heroku\n3. Change tabs/click Settings, then search for Buildpacks text\n4. Click button Add build pack, then type `https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest`\n5. Click Save changes, and you need to rebuild your heroku app to take changes!\n\nNeed help?\nGo @AyraSupport and ask there")
+				return
+
 		try:
 			os.remove("nana/downloads/{}".format(origtitle))
 		except FileNotFoundError:
@@ -174,5 +181,5 @@ async def youtube_music(client, message):
 		errors = traceback.format_exception(etype=exc_type, value=exc_obj, tb=exc_tb)
 		await message.edit("**An error has accured!**\nCheck your assistant for more information!")
 		button = InlineKeyboardMarkup([[InlineKeyboardButton("🐞 Report bugs", callback_data="report_errors")]])
-		await setbot.send_message(message.from_user.id, "**An error has accured!**\n```{}```".format(errors[-1]), reply_markup=button)
+		await setbot.send_message(message.from_user.id, "**An error has accured!**\n```{}```".format(errors), reply_markup=button)
 		logging.exception("Execution error")

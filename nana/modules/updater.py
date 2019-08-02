@@ -1,7 +1,9 @@
 import os
+import shutil
+import sys
 
 from nana import app, Command, OFFICIAL_BRANCH, REPOSITORY
-from __main__ import restart_all
+from __main__ import restart_all, except_hook
 from pyrogram import Filters
 from nana.assistant.updater import update_changelog
 
@@ -33,17 +35,44 @@ async def gen_chlog(repo, diff):
 @app.on_message(Filters.user("self") & Filters.command(["update"], Command))
 async def Updater(client, message):
 	await message.edit("__Checking update...__")
+	initial = False
 	try:
 		repo = Repo()
 	except exc.NoSuchPathError as error:
 		await message.edit(f"**Update failed!**\n\nError:\n`directory {error} is not found`")
 		return
 	except exc.InvalidGitRepositoryError as error:
-		await message.edit(f"**Update failed!**\n\nError:\n`directory {error} does not seems to be a git repository`")
-		return
+		# await message.edit(f"**Update failed!**\n\nError:\n`directory {error} does not seems to be a git repository`")
+		# return
+		repo = Repo.init()
+		initial = True
 	except exc.GitCommandError as error:
 		await message.edit(f'**Update failed!**\n\nError:\n`{error}`')
 		return
+
+	if initial:
+		try:
+			os.mkdir('nana-old')
+			os.rename('nana', 'nana-old/nana')
+			os.rename('.gitignore', 'nana-old/.gitignore')
+			os.rename('LICENSE', 'nana-old/LICENSE')
+			os.rename('README.md', 'nana-old/README.md')
+			os.rename('requirements.txt', 'nana-old/requirements.txt')
+			update = repo.create_remote('master', REPOSITORY)
+			update.pull('master')
+			os.rename('nana-old/nana/config.py', 'nana/config.py')
+			shutil.rmtree('nana/session/')
+			os.rename('nana-old/nana/session/', 'nana/session/')
+		except Exception as err:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			await message.edit('An error has accured!\nPlease see your Assistant for more information!')
+			await except_hook(exc_type, exc_obj, exc_tb)
+			return
+		await message.edit('Successfully Updated!\nBot is restarting...')
+		await update_changelog("-> **WARNING**: Bot has been created a new git and sync to latest version, your old files is in nana-old")
+		await restart_all()
+		return
+
 
 	brname = repo.active_branch.name
 	if brname not in OFFICIAL_BRANCH:

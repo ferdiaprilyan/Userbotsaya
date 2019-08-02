@@ -42,8 +42,6 @@ async def Updater(client, message):
 		await message.edit(f"**Update failed!**\n\nError:\n`directory {error} is not found`")
 		return
 	except exc.InvalidGitRepositoryError as error:
-		# await message.edit(f"**Update failed!**\n\nError:\n`directory {error} does not seems to be a git repository`")
-		# return
 		repo = Repo.init()
 		initial = True
 	except exc.GitCommandError as error:
@@ -88,7 +86,10 @@ async def Updater(client, message):
 
 	upstream = repo.remote('upstream')
 	upstream.fetch(brname)
-	changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
+	try:
+		changelog = await gen_chlog(repo, f'HEAD..upstream/{brname}')
+	except exc.GitCommandError:
+		changelog = "Failed to fetch changelog!"
 
 	if not changelog:
 		await message.edit(f'Nana is up-to-date with branch **{brname}**\n')

@@ -19,6 +19,7 @@ from pathlib import Path
 from nana import app, setbot, Command
 from pyrogram import Filters, InlineKeyboardMarkup, InlineKeyboardButton
 from nana.helpers.parser import cleanhtml, escape_markdown
+from nana.modules.downloads import download_url
 
 __MODULE__ = "YouTube"
 __HELP__ = """
@@ -137,7 +138,10 @@ async def youtube_music(client, message):
 			os.remove("nana/downloads/{}".format(origtitle))
 		except FileNotFoundError:
 			pass
-		music.download(filepath="nana/downloads/{}".format(origtitle))
+		# music.download(filepath="nana/downloads/{}".format(origtitle))
+		download = await download_url(music.url, origtitle)
+		if download == "Failed to download file\nInvaild file name!":
+			return await message.edit(download)
 		titletext = "**Converting music...**\n"
 		await message.edit(titletext+text, disable_web_page_preview=True)
 		if avthumb:

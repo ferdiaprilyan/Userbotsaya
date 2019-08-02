@@ -164,7 +164,7 @@ async def youtube_music(client, message):
 		getprev = requests.get(video.thumb, stream=True)
 		with open("nana/cache/prev.jpg", "wb") as stk:
 			shutil.copyfileobj(getprev.raw, stk)
-		await app.send_audio(message.chat.id, audio="nana/downloads/{}.mp3".format(musictitle), thumb="nana/cache/prev.jpg", title=music.title, caption="🕦 `{}`".format(video.duration))
+		await app.send_audio(message.chat.id, audio="nana/downloads/{}.mp3".format(musictitle), thumb="nana/cache/prev.jpg", title=music.title, caption="🕦 `{}`".format(video.duration), reply_to_message_id=message.message_id)
 		os.remove("nana/cache/prev.jpg")
 		try:
 			os.remove("nana/cache/thumb.jpg")

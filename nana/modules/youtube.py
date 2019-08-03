@@ -111,14 +111,14 @@ async def youtube_music(client, message):
 		audios = [audio for audio in video.audiostreams]
 		audios.sort(key=lambda a: (int(a.quality.strip('k')) * -1))
 		music = audios[0]
-		text = "🎬 **Title:** [{}]({})\n".format(escape_markdown(video.title), video.watchv_url)
+		text = "[⁣](https://i.ytimg.com/vi/{}/0.jpg)🎬 **Title:** [{}]({})\n".format(video.videoid, escape_markdown(video.title), video.watchv_url)
 		text += "👤 **Author:** `{}`\n".format(video.author)
 		text += "🕦 **Duration:** `{}`\n".format(video.duration)
 		origtitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title + "." + music._extension))
 		musictitle = re.sub(r'[\\/*?:"<>|\[\]]', "", str(music.title))
 		musicdate = video._ydl_info['upload_date'][:4]
 		titletext = "**Downloading music...**\n"
-		await message.edit(titletext+text, disable_web_page_preview=True)
+		await message.edit(titletext+text, disable_web_page_preview=False)
 		r = requests.get("https://i.ytimg.com/vi/{}/maxresdefault.jpg".format(video.videoid), stream=True)
 		if r.status_code != 200:
 			r = requests.get("https://i.ytimg.com/vi/{}/hqdefault.jpg".format(video.videoid), stream=True)
@@ -143,7 +143,7 @@ async def youtube_music(client, message):
 		if download == "Failed to download file\nInvaild file name!":
 			return await message.edit(download)
 		titletext = "**Converting music...**\n"
-		await message.edit(titletext+text, disable_web_page_preview=True)
+		await message.edit(titletext+text, disable_web_page_preview=False)
 		try:
 			process = subprocess.Popen("ffmpeg", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		except Exception as err:
@@ -160,7 +160,7 @@ async def youtube_music(client, message):
 		except FileNotFoundError:
 			pass
 		titletext = "**Uploading...**\n"
-		await message.edit(titletext+text, disable_web_page_preview=True)
+		await message.edit(titletext+text, disable_web_page_preview=False)
 		getprev = requests.get(video.thumb, stream=True)
 		with open("nana/cache/prev.jpg", "wb") as stk:
 			shutil.copyfileobj(getprev.raw, stk)
@@ -171,7 +171,7 @@ async def youtube_music(client, message):
 		except FileNotFoundError:
 			pass
 		titletext = "**Done! 🤗**\n"
-		await message.edit(titletext+text, disable_web_page_preview=True)
+		await message.edit(titletext+text, disable_web_page_preview=False)
 	except Exception as err:
 		if "command not found" in str(err) or "is not recognized" in str(err):
 			await message.edit("You need to install ffmpeg first!\nCheck your assistant for more information!")

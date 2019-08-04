@@ -4,8 +4,8 @@ class Config(object):
 	
 	# Must be filled!
 	# Register here: https://my.telegram.org/apps
-	api_id = 12345
-	api_hash = "123456789abcdefghijklmnopqrstuvw"
+	api_id = 803843
+	api_hash = "4705e5aba89a0e08b51c6dfb7125b290"
 	DB_URL = "postgres://username:password@localhost:5432/database" # Your database URL
 
 	# Version
@@ -16,12 +16,12 @@ class Config(object):
 	# Use real bot for Assistant
 	# Pass False if you dont want
 	ASSISTANT_BOT = True
-	ASSISTANT_BOT_TOKEN = ""
+	ASSISTANT_BOT_TOKEN = "722320221:AAHW2iUIzHMwMYeGV_MYjmHbk8zZXpgrTv0"
 
 	# Required for some features
 	# Owner and AdminSettings is for your Assistant bot only
-	Owner = 388576209 # Insert your Telegram ID (go @EmiliaHikariBot, type /id)
-	AdminSettings = [388576209] # Do like above, can insert multiple other user id, example [12345, 23456]
+	Owner = 681335505 # Insert your Telegram ID (go @EmiliaHikariBot, type /id)
+	AdminSettings = [681335505] # Do like above, can insert multiple other user id, example [12345, 23456]
 	Command = ["!", "."] # Insert command prefix, if you insert "!" then you can do !ping
 	# WORKER must be int (number)
 	NANA_WORKER = 8

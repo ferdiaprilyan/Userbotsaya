@@ -1,23 +1,28 @@
 # Nana-TgBot
 ### Userbot + Assistant for Telegram
 
-Currently work fine perfectly, but some features may give you error.
-Go to our group support if you want to ask something [@AyraSupport](https://t.me/AyraSupport)
+Currently work fine perfectly, but some features may give you error. Please report a bug to me if you facing any issues.
+> Go to our group support if you want to ask something [@AyraSupport](https://t.me/AyraSupport)
 
 ```
 Q: Why need Assistant (Real bot)?
 A: Because real bot will help you a lot for many things, and make user easy to use it.
 ```
 
+## Requirements
+
+- Python 3.4 or higher.
+- [A Telegram API key](https://my.telegram.org/apps).
+- PostgreSQL Server
+
 ```
 For windows user, please use Python 3.6.7 release or Newest instead!
 ```
 
-
 # Installation guide
 
 This is long boring confused stuff if you new in this, please read carefully.
-If you need something, just come to [@AyraSupport](https://t.me/AyraSupport) to get help.
+> If you need something, just come to [@AyraSupport](https://t.me/AyraSupport) to get help.
 
 ## Create a Real Bot
 
@@ -50,18 +55,18 @@ Then you ready to go next guide
 Before install python requirements, you need to install some dependencies for prevent got error
 
 ### Linux user
-Install postgresql first for prevent failing build in pip
+> Install postgresql first for prevent failing build in pip
 ```
 sudo apt-get update && sudo apt-get install postgresql
 ```
 
 ### Android (Termux) user
-You need to perform update and install all dependencies for prevent failing build some pip requirements
+> You need to perform update and install all dependencies for prevent failing build some pip requirements
 ```
 pkg update && pkg install clang git postgresql python libcrypt-dev libjpeg-turbo
 ```
 
-### Install Python Requirements
+## Install Python Requirements
 Install all requirements python, in your terminal type this
 ```
 pip install -r requirements.txt
@@ -144,12 +149,12 @@ postgres://YOUR_USER:password@localhost:5432/YOUR_DB_NAME
 
 ## Run NanaBot and Assistant
 
-To run this bot, just type
+> To run this bot, just type
 ```
 python -m nana
 ```
 
-Or if you're using pipenv, do this instead
+> Or if you're using pipenv, do this instead
 ```
 pipenv run python -m nana
 ```
@@ -158,8 +163,13 @@ pipenv run python -m nana
 
 Assistant will check update every bot is running, make sure you're on official branch.
 
-To check update manual, just type `update` with Command (default is .) in your nana bot.
-
-To get update, type `update now` in your nana bot.
+> To check update manual, just type `update` with Command (default is .) in your nana bot.
+> To get update, type `update now` in your nana bot.
 
 Or you can update via Assistant (If they notify you), just click Update Now and wait for update!
+
+Seeking extra help? Don't be shy, come join and ask our [Community](https://t.me/AyraSupport)!
+
+# Contributing
+
+Nana userbot is brand new, and you are welcome to try it and help make it even better by either submitting pull requests or reporting issues/bugs as well as suggesting best practices, ideas, enhancements on both code and documentation. Any help is appreciated!

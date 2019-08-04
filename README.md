@@ -1,8 +1,8 @@
 # Nana-TgBot
 ### Userbot + Assistant for Telegram
 
-Currently in WIP, so do with you own risk!
-Go to our group support for get update about this [@AyraSupport](https://t.me/AyraSupport)
+Currently work fine perfectly, but some features may give you error.
+Go to our group support if you want to ask something [@AyraSupport](https://t.me/AyraSupport)
 
 ```
 Q: Why need Assistant (Real bot)?
@@ -47,22 +47,37 @@ AdminSettings = [388576209] # From guide no 3
 Then you ready to go next guide
 
 ## Install Requirements
+Before install python requirements, you need to install some dependencies for prevent got error
 
-Install all requirements by python, in your terminal type this:
+### Linux user
+Install postgresql first for prevent failing build in pip
+```
+sudo apt-get update && sudo apt-get install postgresql
+```
+
+### Android (Termux) user
+You need to perform update and install all dependencies for prevent failing build some pip requirements
+```
+pkg update && pkg install clang git postgresql python libcrypt-dev libjpeg-turbo
+```
+
+### Install Python Requirements
+Install all requirements python, in your terminal type this
 ```
 pip install -r requirements.txt
 ```
 
-If you're using pipenv, use this instead:
+If you're using pipenv, use this instead
 ```
 pipenv install -r requirements.txt
 ```
 
-## Install Database
 
+## Install Database
 This is required for some features, if you want to use database, follow this guide.
 
-- Install postgresql
+### Linux user
+- Install postgresql (if not installed)
 ```
 sudo apt-get update && sudo apt-get install postgresql
 ```
@@ -89,7 +104,42 @@ psql YOUR_DB_NAME -h YOUR_HOST YOUR_USER
 
 - After create a database, your database URL should be like this
 ```
-sqldbtype://YOUR_USER:password@localhost:5432/YOUR_DB_NAME
+postgres://YOUR_USER:password@localhost:5432/YOUR_DB_NAME
+```
+
+### Windows user
+You can download Postgresql server [here](https://www.postgresql.org/download/windows/)
+
+### Android (Termux) user
+- Install postgresql (if not installed)
+```
+pkg update && pkg install postgresql
+```
+
+- After installing postgres, run server with this
+```
+initdb ~/pg
+pg_ctl -D ~/pg start
+```
+
+- Create a user, change **YOUR_USER** with you own user
+```
+createuser -P -s -e YOUR_USER
+```
+
+- Create a database, dont forget to change **YOUR_USER** and **YOUR_DB_NAME**
+```
+createdb -O YOUR_USER YOUR_DB_NAME
+```
+
+- Test your database (optional)
+```
+psql YOUR_DB_NAME -h YOUR_HOST YOUR_USER
+```
+
+- After create a database, your database URL should be like this
+```
+postgres://YOUR_USER:password@localhost:5432/YOUR_DB_NAME
 ```
 
 ## Run NanaBot and Assistant
